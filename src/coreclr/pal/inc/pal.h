@@ -144,7 +144,7 @@ typedef PVOID NATIVE_LIBRARY_HANDLE;
 
 /******************* Compiler-specific glue *******************************/
 #ifndef THROW_DECL
-#if defined(_MSC_VER) || !defined(__cplusplus)
+#if defined(_MSC_VER) || defined(__HAIKU__) || !defined(__cplusplus)
 #define THROW_DECL
 #else
 #define THROW_DECL throw()
@@ -2546,6 +2546,8 @@ PALIMPORT BOOL PALAPI PAL_VirtualUnwindOutOfProc(CONTEXT *context, KNONVOLATILE_
 #define PAL_CS_NATIVE_DATA_SIZE 48
 #elif defined(__linux__) && defined(__loongarch64)
 #define PAL_CS_NATIVE_DATA_SIZE 96
+#elif defined(__HAIKU__) && defined(__x86_64__)
+#define PAL_CS_NATIVE_DATA_SIZE 56
 #else
 #warning
 #error  PAL_CS_NATIVE_DATA_SIZE is not defined for this architecture
@@ -4439,7 +4441,13 @@ PALIMPORT DLLEXPORT int * __cdecl PAL_errno(int caller);
 PALIMPORT DLLEXPORT char * __cdecl getenv(const char *);
 PALIMPORT DLLEXPORT int __cdecl _putenv(const char *);
 
+#ifndef PAL_STDCPP_COMPAT
+#ifndef __HAIKU__
 #define ERANGE          34
+#else
+#define ERANGE ((int)0x80007011)
+#endif
+#endif
 
 PALIMPORT WCHAR __cdecl PAL_ToUpperInvariant(WCHAR);
 PALIMPORT WCHAR __cdecl PAL_ToLowerInvariant(WCHAR);

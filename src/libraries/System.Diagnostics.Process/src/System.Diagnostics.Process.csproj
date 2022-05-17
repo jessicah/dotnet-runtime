@@ -347,6 +347,12 @@
     <Compile Include="System\Diagnostics\ProcessManager.iOS.cs" />
     <Compile Include="System\Diagnostics\ProcessThread.iOS.cs" />
   </ItemGroup>
+  <ItemGroup Condition="'$(TargetsHaiku)' == 'true'">
+    <Compile Include="$(CommonPath)Interop\Haiku\Interop.Process.GetTeamInfo.cs"
+             Link="Common\Interop\Haiku\Interop.Process.GetTeamInfo.cs" />
+    <Compile Include="$(CommonPath)Interop\Unix\System.Native\Interop.Stat.cs"
+             Link="Common\Unix\System.Native\Interop.Stat.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Win32.Primitives" />
     <Reference Include="Microsoft.Win32.Registry" />

@@ -55,5 +55,6 @@
     <UnofficialBuildRID Include="linux-musl-s390x">
       <Platform>s390x</Platform>
     </UnofficialBuildRID>
+    <UnofficialBuildRID Include="haiku-x64" />
   </ItemGroup>
 </Project>

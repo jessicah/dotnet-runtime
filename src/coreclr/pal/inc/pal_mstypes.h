@@ -58,6 +58,11 @@ extern "C" {
 
 #else   // !defined(__i386__)
 
+#if defined(__HAIKU__)
+#undef __stdcall
+#undef __cdecl
+#endif
+
 #define __stdcall
 #define _stdcall
 #define __cdecl
@@ -559,7 +564,7 @@ typedef LONG_PTR SSIZE_T, *PSSIZE_T;
 #endif
 
 #ifndef PAL_STDCPP_COMPAT
-#if defined(__APPLE_CC__) || defined(__linux__)
+#if defined(__APPLE_CC__) || defined(__linux__) || defined(__HAIKU__)
 #ifdef HOST_64BIT
 typedef unsigned long size_t;
 typedef long ptrdiff_t;
@@ -573,6 +578,7 @@ typedef LONG_PTR ptrdiff_t;
 #endif
 #endif // !PAL_STDCPP_COMPAT
 #define _SIZE_T_DEFINED
+#define __size_t__
 
 typedef LONG_PTR LPARAM;
 

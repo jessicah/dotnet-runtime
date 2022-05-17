@@ -135,11 +135,18 @@ typedef BOOL(*UnwindReadMemoryCallback)(PVOID address, PVOID buffer, SIZE_T size
 #ifndef ElfW
 #define ElfW(foo) Elf_ ## foo
 #endif
+#if defined(__HAIKU__) && defined(TARGET_AMD64)
+#define Ehdr   Elf64_Ehdr
+#define Dyn    Elf64_Dyn
+#define Shdr   Elf64_Shdr
+#define Nhdr   Elf64_Nhdr
+#else
 #define Ehdr   ElfW(Ehdr)
-#define Phdr   ElfW(Phdr)
+#define Dyn    ElfW(Dyn)
 #define Shdr   ElfW(Shdr)
 #define Nhdr   ElfW(Nhdr)
-#define Dyn    ElfW(Dyn)
+#endif
+#define Phdr   ElfW(Phdr)
 
 #ifndef FEATURE_USE_SYSTEM_LIBUNWIND
 extern "C" int
@@ -2181,8 +2188,11 @@ find_proc_info(unw_addr_space_t as, unw_word_t ip, unw_proc_info_t *pip, int nee
         case PT_DYNAMIC:
             dynamicAddr = reinterpret_cast<Dyn*>(loadbias + ph.p_vaddr);
             break;
-
+#if defined(__HAIKU__)
+        case PT_EH_FRAME:
+#else
         case PT_GNU_EH_FRAME:
+#endif
             ehFrameHdrAddr = loadbias + ph.p_vaddr;
             ehFrameHdrLen = ph.p_memsz;
             break;

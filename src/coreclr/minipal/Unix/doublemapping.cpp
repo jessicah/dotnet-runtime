@@ -39,7 +39,7 @@ bool VMToOSInterface::CreateDoubleMemoryMapper(void** pHandle, size_t *pMaxExecu
 {
 #ifndef TARGET_OSX
 
-#ifdef TARGET_FREEBSD
+#if defined(TARGET_FREEBSD)
     int fd = shm_open(SHM_ANON, O_RDWR | O_CREAT, S_IRWXU);
 #elif defined(TARGET_SUNOS) // has POSIX implementation
     char name[24];
@@ -47,9 +47,12 @@ bool VMToOSInterface::CreateDoubleMemoryMapper(void** pHandle, size_t *pMaxExecu
     name[sizeof(name) - 1] = '\0';
     shm_unlink(name);
     int fd = shm_open(name, O_RDWR | O_CREAT | O_EXCL | O_NOFOLLOW, 0600);
-#else // TARGET_FREEBSD
+#elif defined(TARGET_HAIKU)
+    // haiku: this is likely broken, we don't (yet) have SHM_ANON
+    int fd = shm_open((char*)1, O_RDWR | O_CREAT, S_IRWXU);
+#else // TARGET_FREEBSD / TARGET_HAIKU
     int fd = memfd_create("doublemapper", MFD_CLOEXEC);
-#endif // TARGET_FREEBSD
+#endif // TARGET_FREEBSD / TARGET_HAIKU
 
     if (fd == -1)
     {
