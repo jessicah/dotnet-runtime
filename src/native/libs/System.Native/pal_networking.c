@@ -1863,7 +1863,7 @@ static bool TryGetPlatformSocketOption(int32_t socketOptionLevel, int32_t socket
                     return true;
 
                 // case SocketOptionName_SO_TCP_BSDURGENT:
-
+#ifndef __HAIKU__
                 case SocketOptionName_SO_TCP_KEEPALIVE_RETRYCOUNT:
                     *optName = TCP_KEEPCNT;
                     return true;
@@ -1880,7 +1880,7 @@ static bool TryGetPlatformSocketOption(int32_t socketOptionLevel, int32_t socket
                 case SocketOptionName_SO_TCP_KEEPALIVE_INTERVAL:
                     *optName = TCP_KEEPINTVL;
                     return true;
-
+#endif
                 default:
                     return false;
             }

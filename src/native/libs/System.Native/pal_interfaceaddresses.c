@@ -49,6 +49,9 @@
 #elif defined(AF_LINK)
 #include <net/if_dl.h>
 #include <net/if_types.h>
+#if defined(__HAIKU__)
+#include <sys/sockio.h>
+#endif
 #else
 #error System must have AF_PACKET or AF_LINK.
 #endif
@@ -398,6 +401,9 @@ int32_t SystemNative_GetNetworkInterfaces(int32_t * interfaceCount, NetworkInter
 
             // OperationalState returns whether the interface can transmit data packets.
             // The administrator must have enabled the interface (IFF_UP), and the cable must be plugged in (IFF_RUNNING).
+            #ifdef __HAIKU__
+            #define IFF_RUNNING 0
+            #endif
             nii->OperationalState = ((ifaddrsEntry->ifa_flags & (IFF_UP|IFF_RUNNING)) == (IFF_UP|IFF_RUNNING)) ? OperationalStatus_Up : OperationalStatus_Down;
         }
 
