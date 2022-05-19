@@ -91,10 +91,12 @@ if (GEN_SHARED_LIB)
         ${VERSION_FILE_PATH}
     )
 
-    target_link_libraries(System.Globalization.Native
-        dl
-        ${FOUNDATION}
-    )
+    if (NOT CLR_CMAKE_TARGET_HAIKU)
+        target_link_libraries(System.Globalization.Native
+            dl
+            ${FOUNDATION}
+        )
+    endif()
 
     install_with_stripped_symbols (System.Globalization.Native PROGRAMS .)
 endif()
@@ -110,7 +112,7 @@ endif()
 
 install (TARGETS System.Globalization.Native-Static DESTINATION ${STATIC_LIB_DESTINATION} COMPONENT libs)
 
-if(NOT CLR_CMAKE_TARGET_OSX AND NOT CLR_CMAKE_TARGET_MACCATALYST AND NOT CLR_CMAKE_TARGET_IOS AND NOT CLR_CMAKE_TARGET_TVOS AND NOT CLR_CMAKE_TARGET_ANDROID)
+if(NOT CLR_CMAKE_TARGET_OSX AND NOT CLR_CMAKE_TARGET_MACCATALYST AND NOT CLR_CMAKE_TARGET_IOS AND NOT CLR_CMAKE_TARGET_TVOS AND NOT CLR_CMAKE_TARGET_ANDROID AND NOT CLR_CMAKE_TARGET_HAIKU)
     if (GEN_SHARED_LIB)
         add_custom_command(TARGET System.Globalization.Native POST_BUILD
             COMMENT "Verifying System.Globalization.Native.so dependencies"

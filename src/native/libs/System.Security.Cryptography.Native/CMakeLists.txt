@@ -88,7 +88,7 @@ if (GEN_SHARED_LIB)
         #
         # on Linux, the build will succeed with undefined symbols, then the script reports them
         # and fails the build for us.
-        if (NOT APPLE)
+        if (NOT APPLE AND NOT CLR_CMAKE_TARGET_HAIKU)
             add_custom_command(TARGET System.Security.Cryptography.Native.OpenSsl POST_BUILD
                 COMMENT "Verifying System.Security.Cryptography.Native.OpenSsl.so dependencies"
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../verify-so.sh
@@ -99,7 +99,7 @@ if (GEN_SHARED_LIB)
         endif()
     endif()
 
-    if (NOT CLR_CMAKE_TARGET_MACCATALYST AND NOT CLR_CMAKE_TARGET_IOS AND NOT CLR_CMAKE_TARGET_TVOS AND NOT CLR_CMAKE_TARGET_ANDROID)
+    if (NOT CLR_CMAKE_TARGET_MACCATALYST AND NOT CLR_CMAKE_TARGET_IOS AND NOT CLR_CMAKE_TARGET_TVOS AND NOT CLR_CMAKE_TARGET_ANDROID AND NOT CLR_CMAKE_TARGET_HAIKU)
         add_custom_command(TARGET System.Security.Cryptography.Native.OpenSsl POST_BUILD
             COMMENT "Verifying System.Security.Cryptography.Native.OpenSsl entry points against entrypoints.c "
             COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../verify-entrypoints.sh

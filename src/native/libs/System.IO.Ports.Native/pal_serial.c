@@ -24,6 +24,10 @@ intptr_t SystemIoPortsNative_SerialPortOpen(const char * name)
         return fd;
     }
 
+#ifdef __HAIKU__
+    // Haiku doesn't have TIOCEXCL
+    return -1;
+#else
     if (ioctl(fd, TIOCEXCL) != 0)
     {
         // We couldn't get exclusive access to the device file
@@ -32,6 +36,7 @@ intptr_t SystemIoPortsNative_SerialPortOpen(const char * name)
         errno = oldErrno;
         return -1;
     }
+#endif
 
     return fd;
 }
@@ -42,8 +47,11 @@ int SystemIoPortsNative_SerialPortClose(intptr_t handle)
     // some devices don't unlock handles from exclusive access
     // preventing reopening after closing the handle
 
+#ifndef __HAIKU__
     // ignoring the error - best effort
     ioctl(fd, TIOCNXCL);
+#endif
+
     return close(fd);
 }
 
