@@ -15,6 +15,10 @@
 #include <IOKit/serial/ioss.h>
 #endif
 
+#ifdef __HAIKU__
+#define TIOCM_RNG TIOCM_RI
+#endif
+
 /* This is dup of System/IO/Ports/NativeMethods.cs */
 enum
 {
@@ -391,7 +395,12 @@ int32_t SystemIoPortsNative_TermiosAvailableBytes(intptr_t handle, int32_t readB
 {
     int fd = ToFileDescriptor(handle);
     int32_t bytes;
+#ifdef __HAIKU__
+    // Haiku doesn't have TIOCOUTQ
+    if ((readBuffer == 0) || (ioctl (fd, FIONREAD, &bytes) == -1))
+#else
     if (ioctl (fd, readBuffer ? FIONREAD : TIOCOUTQ, &bytes) == -1)
+#endif
     {
         return -1;
     }
